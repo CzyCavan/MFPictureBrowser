@@ -2,10 +2,7 @@
 //  Copyright © 2018年 GodzzZZZ. All rights reserved.
 
 #import "MFPictureView.h"
-#import <PINRemoteImage/PINImageView+PINRemoteImage.h>
-#import <PINRemoteImage/PINRemoteImage.h>
-#import <PINCache/PINCache.h>
-#import "FLAnimatedImageView+TransitionImage.h"
+#import "YYAnimatedImageView+TransitionImage.h"
 @interface MFPictureView()
 <
 UIScrollViewDelegate
@@ -18,7 +15,6 @@ UIScrollViewDelegate
 @property (nonatomic, assign, getter = isShowingAnimation) BOOL showingAnimation;
 @property (nonatomic, assign, getter = isLoadingFinished) BOOL loadingFinished;
 @property (nonatomic, assign, getter = isLocalImage) BOOL localImage;
-@property (nonatomic, assign, getter = isGIF) BOOL GIF;
 @property (nonatomic, strong) UIProgressView *progressView;
 @end
 
@@ -30,10 +26,6 @@ UIScrollViewDelegate
         self.localImage = false;
         if (pictureModel.imageName) {
             self.localImage = true;
-        }
-        self.GIF = false;
-        if (pictureModel.imageType == MFImageTypeGIF) {
-            self.GIF = true;
         }
         [self setupUI];
         self.pictureModel = pictureModel;
@@ -49,7 +41,7 @@ UIScrollViewDelegate
     self.showsVerticalScrollIndicator = false;
     self.maximumZoomScale = 2;
 
-    FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] init];
+    YYAnimatedImageView *imageView = [[YYAnimatedImageView alloc] init];
     imageView.clipsToBounds = true;
     imageView.layer.cornerRadius = 3;
     imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -58,7 +50,7 @@ UIScrollViewDelegate
     _imageView = imageView;
     [self addSubview:imageView];
     
-    if (!self.isLocalImage || (self.isLocalImage && self.isGIF)) {
+    if (!self.isLocalImage) {
         UIProgressView *progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 3, [UIScreen mainScreen].bounds.size.width, 3)];
         progressView.progressViewStyle = UIProgressViewStyleDefault;
         progressView.progressTintColor = [UIColor colorWithWhite:1 alpha:0.2];
@@ -122,184 +114,65 @@ UIScrollViewDelegate
     _pictureModel = pictureModel;
     if (pictureModel.imageName) {
         if (pictureModel.imageType == MFImageTypeGIF) {
-            self.loadingFinished = false;
-            self.progressView.alpha = 1;
-            [UIView animateWithDuration:1 animations:^{
-                [self.progressView setProgress:0.8 animated:true];
-            }];
             UIImage *image = pictureModel.posterImage;
             [self setPictureSize:image.size];
             self.imageView.image = image;
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                NSURL *imageURL = [[NSBundle mainBundle] URLForResource:pictureModel.imageName withExtension:nil];
-                FLAnimatedImage *animatedImage = [FLAnimatedImage animatedImageWithGIFData:[NSData dataWithContentsOfURL:imageURL]];
-                self.loadingFinished = true;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
-                        [_pictureDelegate pictureView:self image:nil animatedImage:animatedImage didLoadAtIndex:self.index];
-                    }
-                    [UIView animateWithDuration:0.2 animations:^{
-                        if (animatedImage) {
-                            [self.progressView setProgress:1 animated:true];
-                        }
-                        self.progressView.alpha = 0;
-                    }];
-                });
+                YYImage *animatedImage = [YYImage imageNamed:pictureModel.imageName];
                 if (animatedImage) {
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
+                            [_pictureDelegate pictureView:self image:nil animatedImage:animatedImage didLoadAtIndex:self.index];
+                        }
                         [self setPictureSize:animatedImage.size];
                         [self.imageView animatedTransitionAnimatedImage:animatedImage];
                     });
                 }
             });
         }else {
-            self.loadingFinished = true;
-            self.progressView.alpha = 0;
             UIImage *image = [UIImage imageNamed:pictureModel.imageName];
             if (image) {
-                [self setPictureSize:image.size];
-                self.imageView.image = image;
-                if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
-                    [_pictureDelegate pictureView:self image:image animatedImage:nil didLoadAtIndex:self.index];
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
+                        [_pictureDelegate pictureView:self image:image animatedImage:nil didLoadAtIndex:self.index];
+                    }
+                    [self setPictureSize:image.size];
+                    self.imageView.image = image;
+                });
             }
         }
     }else {
-        if (pictureModel.imageType == MFImageTypeGIF) {
-            NSString *cacheKey = [[PINRemoteImageManager sharedImageManager] cacheKeyForURL:[NSURL URLWithString:pictureModel.imageURL] processorKey:nil];
-            PINCache *cache = [PINRemoteImageManager sharedImageManager].cache;
-            BOOL imageAvailable = [cache containsObjectForKey:cacheKey];
-            [self.imageView setPin_updateWithProgress:YES];
-            if (!imageAvailable) {
-                self.progressView.alpha = 1;
-                UIImage *image = pictureModel.posterImage;
-                [self setPictureSize:image.size];
-                self.imageView.image = image;
-                __weak __typeof(self)weakSelf = self;
-                [[PINRemoteImageManager sharedImageManager] downloadImageWithURL:[NSURL URLWithString:pictureModel.imageURL] options:(PINRemoteImageManagerDownloadOptionsNone) progressDownload:^(int64_t completedBytes, int64_t totalBytes) {
-                    __strong __typeof(weakSelf)strongSelf = weakSelf;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [strongSelf.progressView setProgress:(1.0 * completedBytes / totalBytes) animated:true];
-                    });
-                } completion:^(PINRemoteImageManagerResult * _Nonnull result) {
-                    __strong __typeof(weakSelf)strongSelf = weakSelf;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (result.resultType == PINRemoteImageResultTypeProgress) {
-                            strongSelf.progressView.alpha = 1;
+        self.progressView.alpha = 1;
+        UIImage *image = pictureModel.posterImage;
+        [self setPictureSize:image.size];
+        __weak __typeof(self)weakSelf = self;
+        [self.imageView yy_setImageWithURL:[NSURL URLWithString:pictureModel.imageURL] placeholder:image options:YYWebImageOptionSetImageWithFadeAnimation | YYWebImageOptionProgressiveBlur progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [strongSelf.progressView setProgress:(1.0 * receivedSize / expectedSize) animated:true];
+            });
+        } transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (stage == YYWebImageStageProgress) {
+                    strongSelf.progressView.alpha = 1;
+                }else {
+                    strongSelf.progressView.alpha = 0;
+                }
+                if (!error && (stage == YYWebImageStageFinished || stage == YYWebImageStageCancelled)) {
+                    strongSelf.loadingFinished = true;
+                    [self setPictureSize:image.size];
+                    if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
+                        if (pictureModel.imageType == MFImageTypeGIF) {
+                            [_pictureDelegate pictureView:strongSelf image:nil animatedImage:(YYImage *)image didLoadAtIndex:strongSelf.index];
                         }else {
-                            strongSelf.progressView.alpha = 0;
+                             [_pictureDelegate pictureView:strongSelf image:image animatedImage:nil didLoadAtIndex:strongSelf.index];
                         }
-                        if (!result.error && (result.resultType == PINRemoteImageResultTypeDownload || result.resultType == PINRemoteImageResultTypeMemoryCache || result.resultType == PINRemoteImageResultTypeCache)) {
-                            strongSelf.loadingFinished = true;
-                            if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
-                                [_pictureDelegate pictureView:strongSelf image:nil animatedImage:result.animatedImage didLoadAtIndex:strongSelf.index];
-                            }
-                            if (result.animatedImage) {
-                                [strongSelf setPictureSize:result.animatedImage.size];
-                                [strongSelf.imageView animatedTransitionAnimatedImage:result.animatedImage];
-                            }
-                        }
-                    });
-                }];
-            }else {
-                self.progressView.alpha = 1;
-                [UIView animateWithDuration:1 animations:^{
-                    [self.progressView setProgress:0.8 animated:true];
-                }];
-                UIImage *image = pictureModel.posterImage;
-                [self setPictureSize:image.size];
-                self.imageView.image = image;
-                [cache objectForKey:cacheKey block:^(PINCache * _Nonnull cache, NSString * _Nonnull key, id  _Nullable object) {
-                    FLAnimatedImage *animatedImage = [FLAnimatedImage animatedImageWithGIFData:object];
-                    self.loadingFinished = true;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [UIView animateWithDuration:0.2 animations:^{
-                            if (animatedImage) {
-                                [self.progressView setProgress:1 animated:true];
-                            }
-                            self.progressView.alpha = 0;
-                        }];
-                        if (animatedImage) {
-                            if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
-                                [_pictureDelegate pictureView:self image:nil animatedImage:animatedImage didLoadAtIndex:self.index];
-                            }
-                            [self setPictureSize:animatedImage.size];
-                            [self.imageView animatedTransitionAnimatedImage:animatedImage];
-                        }
-                    });
-                }];
-            }
-        }else {
-            NSString *cacheKey = [[PINRemoteImageManager sharedImageManager] cacheKeyForURL:[NSURL URLWithString:pictureModel.imageURL] processorKey:nil];
-            PINCache *cache = [PINRemoteImageManager sharedImageManager].cache;
-            BOOL imageAvailable = [cache containsObjectForKey:cacheKey];
-            [self.imageView setPin_updateWithProgress:YES];
-            if (!imageAvailable) {
-                self.progressView.alpha = 1;
-                UIImage *image = pictureModel.posterImage;
-                [self setPictureSize:image.size];
-                self.imageView.image = image;
-                __weak __typeof(self)weakSelf = self;
-                [[PINRemoteImageManager sharedImageManager] downloadImageWithURL:[NSURL URLWithString:pictureModel.imageURL] options:(PINRemoteImageManagerDownloadOptionsNone) progressDownload:^(int64_t completedBytes, int64_t totalBytes) {
-                    __strong __typeof(weakSelf)strongSelf = weakSelf;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [strongSelf.progressView setProgress:(1.0 * completedBytes / totalBytes) animated:true];
-                    });
-                } completion:^(PINRemoteImageManagerResult * _Nonnull result) {
-                    __strong __typeof(weakSelf)strongSelf = weakSelf;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (result.resultType == PINRemoteImageResultTypeProgress) {
-                            strongSelf.progressView.alpha = 1;
-                        }else {
-                            strongSelf.progressView.alpha = 0;
-                        }
-                        if (!result.error && (result.resultType == PINRemoteImageResultTypeDownload || result.resultType == PINRemoteImageResultTypeMemoryCache || result.resultType == PINRemoteImageResultTypeCache)) {
-                            strongSelf.loadingFinished = true;
-                            if (result.image) {
-                                if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
-                                    [_pictureDelegate pictureView:strongSelf image:result.image animatedImage:nil didLoadAtIndex:strongSelf.index];
-                                }
-                                [strongSelf setPictureSize:result.image.size];
-                                [strongSelf.imageView animatedTransitionImage:result.image];
-                            }
-                        }
-                    });
-                }];
-            }else {
-                self.progressView.alpha = 1;
-                [UIView animateWithDuration:1 animations:^{
-                    [self.progressView setProgress:0.8 animated:true];
-                }];
-                UIImage *image = pictureModel.posterImage;
-                [self setPictureSize:image.size];
-                self.imageView.image = image;
-                [cache objectForKey:cacheKey block:^(PINCache * _Nonnull cache, NSString * _Nonnull key, id  _Nullable object) {
-                    UIImage *image = nil;
-                    if ([object isKindOfClass:[NSData class]]) {
-                        image = [UIImage imageWithData:object];
-                    }else if ([object isKindOfClass:[UIImage class]]) {
-                        image = object;
+                        
                     }
-                    self.loadingFinished = true;
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [UIView animateWithDuration:0.2 animations:^{
-                            if (image) {
-                                [self.progressView setProgress:1 animated:true];
-                            }
-                            self.progressView.alpha = 0;
-                        }];
-                        if (image) {
-                            if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
-                                [_pictureDelegate pictureView:self image:image animatedImage:nil didLoadAtIndex:self.index];
-                            }
-                            [self setPictureSize:image.size];
-                           [self.imageView animatedTransitionImage:image];
-                        }
-                    });
-                }];
-            }
-        }
+                }
+            });
+        }];
     }
 }
 

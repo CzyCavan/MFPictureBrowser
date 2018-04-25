@@ -4,6 +4,7 @@
 #import "MFPictureBrowser.h"
 #import "MFPictureView.h"
 #import <MFCategory/UIView+MFFrame.h>
+
 @interface MFPictureBrowser()
 <
 UIScrollViewDelegate,
@@ -16,7 +17,7 @@ MFPictureViewDelegate
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, weak) UILabel *pageTextLabel;
 @property (nonatomic, weak) UITapGestureRecognizer *dismissTapGesture;
-@property (nonatomic, strong) FLAnimatedImageView *endView;
+@property (nonatomic, strong) YYAnimatedImageView *endView;
 @end
 
 @implementation MFPictureBrowser
@@ -67,7 +68,7 @@ MFPictureViewDelegate
 
 #pragma mark - 公共方法
 
-- (void)showImageFromView:(FLAnimatedImageView *)fromView picturesCount:(NSInteger)picturesCount currentPictureIndex:(NSInteger)currentPictureIndex {
+- (void)showImageFromView:(YYAnimatedImageView *)fromView picturesCount:(NSInteger)picturesCount currentPictureIndex:(NSInteger)currentPictureIndex {
     [self showFromView:fromView picturesCount:picturesCount currentPictureIndex:currentPictureIndex];
     for (NSInteger i = 0; i < picturesCount; i++) {
         MFPictureView *pictureView = [self createImagePictureViewAtIndex:i];
@@ -99,23 +100,19 @@ MFPictureViewDelegate
 
 - (MFPictureView *)createImagePictureViewAtIndex:(NSInteger)index {
     id<MFPictureModelProtocol> pictureModel = [_delegate pictureBrowser:self pictureModelAtIndex:index];
-    FLAnimatedImageView *animtedImageView = [_delegate pictureBrowser:self imageViewAtIndex:index];
+    YYAnimatedImageView *animtedImageView = [_delegate pictureBrowser:self imageViewAtIndex:index];
     MFPictureView *pictureView = [[MFPictureView alloc] initWithPictureModel:pictureModel];
     [self configPictureView:pictureView index:index animtedImageView:animtedImageView];
     return pictureView;
 }
 
-- (void)configPictureView:(MFPictureView *)pictureView index:(NSInteger)index animtedImageView:(FLAnimatedImageView *)animtedImageView {
+- (void)configPictureView:(MFPictureView *)pictureView index:(NSInteger)index animtedImageView:(YYAnimatedImageView *)animtedImageView {
     [self.dismissTapGesture requireGestureRecognizerToFail:pictureView.imageView.gestureRecognizers.firstObject];
     pictureView.pictureDelegate = self;
     [self.scrollView addSubview:pictureView];
     pictureView.index = index;
     pictureView.size = self.size;
-    if (animtedImageView.image) {
-        pictureView.pictureSize = animtedImageView.image.size;
-    }else if (animtedImageView.animatedImage) {
-        pictureView.pictureSize = animtedImageView.animatedImage.size;
-    }
+    pictureView.pictureSize = animtedImageView.image.size;
     CGPoint center = pictureView.center;
     center.x = index * _scrollView.width + _scrollView.width * 0.5;
     pictureView.center = center;
@@ -147,11 +144,7 @@ MFPictureViewDelegate
     }
     // 取到当前显示的 pictureView
     MFPictureView *pictureView = [[_pictureViews filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"index == %d", self.currentIndex]] firstObject];
-    // 取消所有的下载
-//    for (MFPictureView *pictureView in _pictureViews) {
-//        [pictureView.imageView yy_cancelCurrentImageRequest];
-//    }
-
+    
     // 执行关闭动画
     __weak __typeof(self)weakSelf = self;
     [pictureView animationDismissWithToRect:rect animationBlock:^{
@@ -242,6 +235,7 @@ MFPictureViewDelegate
     }
 }
 
+
 #pragma mark - MFPictureViewDelegate
 
 - (void)pictureView:(MFPictureView *)pictureView didClickAtIndex:(NSInteger)index{
@@ -252,7 +246,7 @@ MFPictureViewDelegate
     self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1 - scale];
 }
 
-- (void)pictureView:(MFPictureView *)pictureView image:(UIImage *)image animatedImage:(FLAnimatedImage *)animatedImage didLoadAtIndex:(NSInteger)index {
+- (void)pictureView:(MFPictureView *)pictureView image:(UIImage *)image animatedImage:(YYImage *)animatedImage didLoadAtIndex:(NSInteger)index {
     if ([_delegate respondsToSelector:@selector(pictureBrowser:image:animatedImage:didLoadAtIndex:)]) {
         [_delegate pictureBrowser:self image:image animatedImage:animatedImage didLoadAtIndex:index];
     }

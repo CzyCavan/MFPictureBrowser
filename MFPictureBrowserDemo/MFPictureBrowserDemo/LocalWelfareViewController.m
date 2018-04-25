@@ -3,8 +3,9 @@
 #import "LocalWelfareViewController.h"
 #import "MFPictureBrowser.h"
 #import "MFDisplayPhotoCollectionViewCell.h"
-#import <PINRemoteImage/PINImageView+PINRemoteImage.h>
-#import "MFPictureBrowser/FLAnimatedImageView+TransitionImage.h"
+#import <YYWebImage/YYWebImage.h>
+#import <YYImage/YYImage.h>
+#import "MFPictureBrowser/YYAnimatedImageView+TransitionImage.h"
 #import "MFPictureModel.h"
 @interface LocalWelfareViewController ()
 <
@@ -70,9 +71,9 @@ MFPictureBrowserDelegate
     
     if (pictureModel.imageType == MFImageTypeGIF) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            NSURL *imageURL = [[NSBundle mainBundle] URLForResource:pictureModel.imageName withExtension:nil];
-            FLAnimatedImage *animatedImage = [FLAnimatedImage animatedImageWithGIFData:[NSData dataWithContentsOfURL:imageURL]];
+            YYImage *animatedImage = [YYImage imageNamed:pictureModel.imageName];
             if (animatedImage) {
+                pictureModel.posterImage = animatedImage.posterImage;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [cell.displayImageView animatedTransitionAnimatedImage:animatedImage];
                     [self configTagImageView:cell.tagImageView size:animatedImage.size imageType:MFImageTypeGIF];
@@ -82,6 +83,7 @@ MFPictureBrowserDelegate
     }else {
         UIImage *image = [UIImage imageNamed:pictureModel.imageName];
         cell.displayImageView.image = image;
+        pictureModel.posterImage = image;
         [self configTagImageView:cell.tagImageView size:image.size imageType:pictureModel.imageType];
     }
     return cell;
@@ -131,7 +133,7 @@ minimumInteritemSpacingForSectionAtIndex: (NSInteger)section{
     [browser showImageFromView:cell.displayImageView picturesCount:self.picList.count currentPictureIndex:indexPath.row];
 }
 
-- (FLAnimatedImageView *)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageViewAtIndex:(NSInteger)index {
+- (YYAnimatedImageView *)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageViewAtIndex:(NSInteger)index {
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     MFDisplayPhotoCollectionViewCell *cell = (MFDisplayPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     return cell.displayImageView;
@@ -142,8 +144,14 @@ minimumInteritemSpacingForSectionAtIndex: (NSInteger)section{
     return pictureModel;
 }
 
-- (void)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageDidLoadAtIndex:(NSInteger)index image:(UIImage *)image animatedImage:(FLAnimatedImage *)animatedImage error:(NSError *)error {
+- (void)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageDidLoadAtIndex:(NSInteger)index image:(UIImage *)image animatedImage:(YYImage *)animatedImage error:(NSError *)error {
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    MFPictureModel *pictureModel = self.picList[index];
+    if (animatedImage) {
+        pictureModel.posterImage = animatedImage.posterImage;
+    }else if (image) {
+        pictureModel.posterImage = image;
+    }
     [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
 }
 

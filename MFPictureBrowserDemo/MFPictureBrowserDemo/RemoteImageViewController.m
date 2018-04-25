@@ -4,10 +4,7 @@
 #import "MFPictureBrowser.h"
 #import "MFDisplayPhotoCollectionViewCell.h"
 #import "MFPictureModel.h"
-#import <PINRemoteImage/PINImageView+PINRemoteImage.h>
-#import <PINCache/PINCache.h>
-#import <PINRemoteImage/PINRemoteImage.h>
-#import "MFPictureBrowser/FLAnimatedImageView+TransitionImage.h"
+#import "MFPictureBrowser/YYAnimatedImageView+TransitionImage.h"
 @interface RemoteImageViewController ()
 <
 UICollectionViewDelegate,
@@ -73,7 +70,9 @@ MFPictureBrowserDelegate
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[[PINRemoteImageManager sharedImageManager] cache] removeAllObjects];
+//    YYImageCache *imageCache = [YYWebImageManager sharedManager].cache;
+//    [imageCache.memoryCache removeAllObjects];
+//    [imageCache.diskCache removeAllObjects];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -90,85 +89,30 @@ MFPictureBrowserDelegate
     MFDisplayPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"reuseCell" forIndexPath:indexPath];
     MFPictureModel *pictureModel = self.picList[indexPath.row];
     NSURL *url = [NSURL URLWithString:pictureModel.imageURL];
-    [cell.displayImageView setPin_updateWithProgress:YES];
     __weak MFDisplayPhotoCollectionViewCell *weakCell = cell;
-    if (pictureModel.imageType == MFImageTypeGIF) {
-        NSString *cacheKey = [[PINRemoteImageManager sharedImageManager] cacheKeyForURL:url processorKey:nil];
-        PINCache *cache = [PINRemoteImageManager sharedImageManager].cache;
-        BOOL imageAvailable = [cache containsObjectForKey:cacheKey];
-        if (imageAvailable) {
-            [cache objectForKey:cacheKey block:^(PINCache * _Nonnull cache, NSString * _Nonnull key, id  _Nullable object) {
-                FLAnimatedImage *animatedImage = [FLAnimatedImage animatedImageWithGIFData:object];
-                if (animatedImage) {
-                    pictureModel.posterImage = animatedImage.posterImage;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [weakCell.displayImageView animatedTransitionAnimatedImage:animatedImage];
-                        weakCell.tagImageView.image = [UIImage imageNamed:@"ic_messages_pictype_gif_30x30_"];
-                        weakCell.tagImageView.alpha = 1;
-                    });
+    [weakCell.displayImageView yy_setImageWithURL:url placeholder:pictureModel.posterImage options:YYWebImageOptionProgressiveBlur | YYWebImageOptionSetImageWithFadeAnimation progress:nil transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+        if (!error && stage == YYWebImageStageFinished) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (pictureModel.imageType == MFImageTypeGIF) {
+                    pictureModel.posterImage = ((YYImage *)image).posterImage;
+                    weakCell.tagImageView.image = [UIImage imageNamed:@"ic_messages_pictype_gif_30x30_"];
+                    weakCell.tagImageView.alpha = 1;
+                }else if (pictureModel.imageType == MFImageTypeLongImage) {
+                    pictureModel.posterImage = image;
+                    weakCell.tagImageView.image = [UIImage imageNamed:@"ic_messages_pictype_long_pic_30x30_"];
+                    weakCell.tagImageView.alpha = 1;
+                }else {
+                    pictureModel.posterImage = image;
+                    weakCell.tagImageView.image = nil;
+                    weakCell.tagImageView.alpha = 0;
                 }
-            }];
-        }else {
-            [[PINRemoteImageManager sharedImageManager] downloadImageWithURL:url options:(PINRemoteImageManagerDownloadOptionsNone) progressDownload:nil completion:^(PINRemoteImageManagerResult * _Nonnull result) {
-                if (!result.error && (result.resultType == PINRemoteImageResultTypeDownload || result.resultType == PINRemoteImageResultTypeMemoryCache || result.resultType == PINRemoteImageResultTypeCache)) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        pictureModel.posterImage = result.animatedImage.posterImage;
-                        if (result.requestDuration > 0.25) {
-                            [weakCell.displayImageView animatedTransitionAnimatedImage:result.animatedImage];
-                        } else {
-                            weakCell.displayImageView.animatedImage = result.animatedImage;
-                        }
-                        weakCell.tagImageView.image = [UIImage imageNamed:@"ic_messages_pictype_gif_30x30_"];
-                        weakCell.tagImageView.alpha = 1;
-                    });
-                }
-            }];
+            });
+        }else if (error || stage == YYWebImageStageCancelled) {
+            pictureModel.posterImage = image;
+            weakCell.tagImageView.image = nil;
+            weakCell.tagImageView.alpha = 0;
         }
-    }else {
-        NSString *cacheKey = [[PINRemoteImageManager sharedImageManager] cacheKeyForURL:url processorKey:nil];
-        PINCache *cache = [PINRemoteImageManager sharedImageManager].cache;
-        BOOL imageAvailable = [cache containsObjectForKey:cacheKey];
-        if (imageAvailable) {
-            [cache objectForKey:cacheKey block:^(PINCache * _Nonnull cache, NSString * _Nonnull key, id  _Nullable object) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if ([object isKindOfClass:[NSData class]]) {
-                        [weakCell.displayImageView animatedTransitionImage:[UIImage imageWithData:object]];
-                    }else if ([object isKindOfClass:[UIImage class]]) {
-                        [weakCell.displayImageView animatedTransitionImage:object];
-                    }
-                    pictureModel.posterImage = weakCell.displayImageView.image;
-                    if (pictureModel.imageType == MFImageTypeLongImage) {
-                        weakCell.tagImageView.image = [UIImage imageNamed:@"ic_messages_pictype_long_pic_30x30_"];
-                        weakCell.tagImageView.alpha = 1;
-                    }else {
-                        weakCell.tagImageView.image = nil;
-                        weakCell.tagImageView.alpha = 0;
-                    }
-                });
-            }];
-        }else {
-            [[PINRemoteImageManager sharedImageManager] downloadImageWithURL:url options:(PINRemoteImageManagerDownloadOptionsNone) progressDownload:nil completion:^(PINRemoteImageManagerResult * _Nonnull result) {
-                if (!result.error && (result.resultType == PINRemoteImageResultTypeDownload || result.resultType == PINRemoteImageResultTypeMemoryCache || result.resultType == PINRemoteImageResultTypeCache)) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (result.requestDuration > 0.25) {
-                            [weakCell.displayImageView animatedTransitionImage:result.image];
-                        } else {
-                            weakCell.displayImageView.image = result.image;
-                        }
-                        pictureModel.posterImage = weakCell.displayImageView.image;
-                        if (pictureModel.imageType == MFImageTypeLongImage) {
-                            weakCell.tagImageView.image = [UIImage imageNamed:@"ic_messages_pictype_long_pic_30x30_"];
-                            weakCell.tagImageView.alpha = 1;
-                        }else {
-                            weakCell.tagImageView.image = nil;
-                            weakCell.tagImageView.alpha = 0;
-                        }
-                    });
-                }
-            }];
-        }
-    }
-
+    }];
     return cell;
 }
 
@@ -202,7 +146,7 @@ minimumInteritemSpacingForSectionAtIndex: (NSInteger)section{
     [browser showImageFromView:cell.displayImageView picturesCount:self.picList.count currentPictureIndex:indexPath.row];
 }
 
-- (UIImageView *)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageViewAtIndex:(NSInteger)index {
+- (YYAnimatedImageView *)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageViewAtIndex:(NSInteger)index {
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     MFDisplayPhotoCollectionViewCell *cell = (MFDisplayPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     return cell.displayImageView;
@@ -213,7 +157,7 @@ minimumInteritemSpacingForSectionAtIndex: (NSInteger)section{
     return pictureModel;
 }
 
-- (void)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageDidLoadAtIndex:(NSInteger)index image:(UIImage *)image animatedImage:(FLAnimatedImage *)animatedImage error:(NSError *)error {
+- (void)pictureBrowser:(MFPictureBrowser *)pictureBrowser imageDidLoadAtIndex:(NSInteger)index image:(UIImage *)image animatedImage:(YYImage *)animatedImage error:(NSError *)error {
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     MFPictureModel *pictureModel = self.picList[index];
     if (animatedImage) {

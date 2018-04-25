@@ -2,13 +2,14 @@
 //  Copyright © 2018年 GodzzZZZ. All rights reserved.
 
 #import <UIKit/UIKit.h>
-#import <FLAnimatedImage/FLAnimatedImageView.h>
+#import <YYWebImage/YYWebImage.h>
+#import <YYImage/YYImage.h>
 #import "MFPictureModelProtocol.h"
 @class MFPictureView;
 @protocol MFPictureViewDelegate <NSObject>
 - (void)pictureView:(MFPictureView *)pictureView didClickAtIndex:(NSInteger)index;
 - (void)pictureView:(MFPictureView *)pictureView scale:(CGFloat)scale;
-- (void)pictureView:(MFPictureView *)pictureView image:(UIImage *)image animatedImage:(FLAnimatedImage *)animatedImage didLoadAtIndex:(NSInteger)index;
+- (void)pictureView:(MFPictureView *)pictureView image:(UIImage *)image animatedImage:(YYImage *)animatedImage didLoadAtIndex:(NSInteger)index;
 @end
 
 @interface MFPictureView : UIScrollView
@@ -19,7 +20,7 @@
 // 协议对象
 @property (nonatomic, strong) id<MFPictureModelProtocol> pictureModel;
 // 当前显示图片的控件
-@property (nonatomic, strong, readonly) FLAnimatedImageView *imageView;
+@property (nonatomic, strong, readonly) YYAnimatedImageView *imageView;
 // 代理
 @property (nonatomic, weak) id<MFPictureViewDelegate> pictureDelegate;
 - (instancetype)init NS_UNAVAILABLE;

@@ -14,16 +14,16 @@
 		4A5AEE9D2085A87600EBFF88 /* MFPictureBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5AEE9C2085A87600EBFF88 /* MFPictureBrowser.m */; };
 		4A5AEEA02085BC7500EBFF88 /* MFPictureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5AEE9F2085BC7500EBFF88 /* MFPictureView.m */; };
 		4A5AEEA32085C11B00EBFF88 /* MFDisplayPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5AEEA22085C11B00EBFF88 /* MFDisplayPhotoCollectionViewCell.m */; };
-		4A60D1112090297900612995 /* LocalWelfareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A60D1102090297900612995 /* LocalWelfareViewController.m */; };
-		4AA906B6208DAD4C00C99D77 /* FLAnimatedImageView+TransitionImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA906B5208DAD4C00C99D77 /* FLAnimatedImageView+TransitionImage.m */; };
+		4A60D12020905FE500612995 /* YYAnimatedImageView+TransitionImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A60D11F20905FE500612995 /* YYAnimatedImageView+TransitionImage.m */; };
+		4A60D1232090761200612995 /* LocalImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A60D1222090761100612995 /* LocalImageViewController.m */; };
+		4A60D1262090761800612995 /* RemoteWelfareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A60D1252090761800612995 /* RemoteWelfareViewController.m */; };
+		4A60D1292090761E00612995 /* LocalWelfareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A60D1282090761D00612995 /* LocalWelfareViewController.m */; };
 		4AE0C925208EBF6800A2B2D5 /* MFPictureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE0C924208EBF6800A2B2D5 /* MFPictureModel.m */; };
 		4AE0C929208F01FC00A2B2D5 /* 1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 4AE0C928208F01FC00A2B2D5 /* 1.gif */; };
 		4AE0C92D208F046800A2B2D5 /* 2.gif in Resources */ = {isa = PBXBuildFile; fileRef = 4AE0C92C208F046800A2B2D5 /* 2.gif */; };
 		4AE0C92F208F1E5500A2B2D5 /* 3.gif in Resources */ = {isa = PBXBuildFile; fileRef = 4AE0C92E208F1E5500A2B2D5 /* 3.gif */; };
-		5E4F795B208C7A670036E0B2 /* RemoteWelfareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E4F795A208C7A670036E0B2 /* RemoteWelfareViewController.m */; };
 		5E53B83F20863DD5007480C7 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E53B83E20863DD5007480C7 /* ListViewController.m */; };
 		5E53B84220863F0B007480C7 /* RemoteImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E53B84120863F0B007480C7 /* RemoteImageViewController.m */; };
-		5E53B84520863F14007480C7 /* LocalImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E53B84420863F14007480C7 /* LocalImageViewController.m */; };
 		5E53B849208642AE007480C7 /* Image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E53B848208642AE007480C7 /* Image.xcassets */; };
 		C343AF5E55FDB1C04384A8C5 /* libPods-MFPictureBrowserDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3403644A2EFF9B61054AEB2 /* libPods-MFPictureBrowserDemo.a */; };
 /* End PBXBuildFile section */
@@ -43,24 +43,24 @@
 		4A5AEE9F2085BC7500EBFF88 /* MFPictureView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MFPictureView.m; sourceTree = "<group>"; };
 		4A5AEEA12085C11B00EBFF88 /* MFDisplayPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFDisplayPhotoCollectionViewCell.h; sourceTree = "<group>"; };
 		4A5AEEA22085C11B00EBFF88 /* MFDisplayPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MFDisplayPhotoCollectionViewCell.m; sourceTree = "<group>"; };
-		4A60D10F2090297900612995 /* LocalWelfareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalWelfareViewController.h; sourceTree = "<group>"; };
-		4A60D1102090297900612995 /* LocalWelfareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalWelfareViewController.m; sourceTree = "<group>"; };
-		4AA906B4208DAD4C00C99D77 /* FLAnimatedImageView+TransitionImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLAnimatedImageView+TransitionImage.h"; sourceTree = "<group>"; };
-		4AA906B5208DAD4C00C99D77 /* FLAnimatedImageView+TransitionImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "FLAnimatedImageView+TransitionImage.m"; sourceTree = "<group>"; };
+		4A60D11E20905FE500612995 /* YYAnimatedImageView+TransitionImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "YYAnimatedImageView+TransitionImage.h"; sourceTree = "<group>"; };
+		4A60D11F20905FE500612995 /* YYAnimatedImageView+TransitionImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "YYAnimatedImageView+TransitionImage.m"; sourceTree = "<group>"; };
+		4A60D1212090761100612995 /* LocalImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalImageViewController.h; sourceTree = "<group>"; };
+		4A60D1222090761100612995 /* LocalImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageViewController.m; sourceTree = "<group>"; };
+		4A60D1242090761700612995 /* RemoteWelfareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteWelfareViewController.h; sourceTree = "<group>"; };
+		4A60D1252090761800612995 /* RemoteWelfareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteWelfareViewController.m; sourceTree = "<group>"; };
+		4A60D1272090761D00612995 /* LocalWelfareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalWelfareViewController.h; sourceTree = "<group>"; };
+		4A60D1282090761D00612995 /* LocalWelfareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalWelfareViewController.m; sourceTree = "<group>"; };
 		4AE0C922208EBAE900A2B2D5 /* MFPictureModelProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MFPictureModelProtocol.h; sourceTree = "<group>"; };
 		4AE0C923208EBF6800A2B2D5 /* MFPictureModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MFPictureModel.h; sourceTree = "<group>"; };
 		4AE0C924208EBF6800A2B2D5 /* MFPictureModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MFPictureModel.m; sourceTree = "<group>"; };
 		4AE0C928208F01FC00A2B2D5 /* 1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 1.gif; sourceTree = "<group>"; };
 		4AE0C92C208F046800A2B2D5 /* 2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 2.gif; sourceTree = "<group>"; };
 		4AE0C92E208F1E5500A2B2D5 /* 3.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 3.gif; sourceTree = "<group>"; };
-		5E4F7959208C7A670036E0B2 /* RemoteWelfareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteWelfareViewController.h; sourceTree = "<group>"; };
-		5E4F795A208C7A670036E0B2 /* RemoteWelfareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteWelfareViewController.m; sourceTree = "<group>"; };
 		5E53B83D20863DD5007480C7 /* ListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		5E53B83E20863DD5007480C7 /* ListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		5E53B84020863F0B007480C7 /* RemoteImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteImageViewController.h; sourceTree = "<group>"; };
 		5E53B84120863F0B007480C7 /* RemoteImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteImageViewController.m; sourceTree = "<group>"; };
-		5E53B84320863F14007480C7 /* LocalImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalImageViewController.h; sourceTree = "<group>"; };
-		5E53B84420863F14007480C7 /* LocalImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalImageViewController.m; sourceTree = "<group>"; };
 		5E53B848208642AE007480C7 /* Image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Image.xcassets; sourceTree = "<group>"; };
 		8E2D0E105573B85353E3FBA2 /* Pods-MFPictureBrowserDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MFPictureBrowserDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-MFPictureBrowserDemo/Pods-MFPictureBrowserDemo.release.xcconfig"; sourceTree = "<group>"; };
 		A3403644A2EFF9B61054AEB2 /* libPods-MFPictureBrowserDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MFPictureBrowserDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,12 +117,12 @@
 				4AE0C924208EBF6800A2B2D5 /* MFPictureModel.m */,
 				5E53B84020863F0B007480C7 /* RemoteImageViewController.h */,
 				5E53B84120863F0B007480C7 /* RemoteImageViewController.m */,
-				5E53B84320863F14007480C7 /* LocalImageViewController.h */,
-				5E53B84420863F14007480C7 /* LocalImageViewController.m */,
-				5E4F7959208C7A670036E0B2 /* RemoteWelfareViewController.h */,
-				5E4F795A208C7A670036E0B2 /* RemoteWelfareViewController.m */,
-				4A60D10F2090297900612995 /* LocalWelfareViewController.h */,
-				4A60D1102090297900612995 /* LocalWelfareViewController.m */,
+				4A60D1212090761100612995 /* LocalImageViewController.h */,
+				4A60D1222090761100612995 /* LocalImageViewController.m */,
+				4A60D1242090761700612995 /* RemoteWelfareViewController.h */,
+				4A60D1252090761800612995 /* RemoteWelfareViewController.m */,
+				4A60D1272090761D00612995 /* LocalWelfareViewController.h */,
+				4A60D1282090761D00612995 /* LocalWelfareViewController.m */,
 				4A5AEEA12085C11B00EBFF88 /* MFDisplayPhotoCollectionViewCell.h */,
 				4A5AEEA22085C11B00EBFF88 /* MFDisplayPhotoCollectionViewCell.m */,
 				4A5AEE8A2085987300EBFF88 /* Main.storyboard */,
@@ -144,8 +144,8 @@
 				4A5AEE9C2085A87600EBFF88 /* MFPictureBrowser.m */,
 				4A5AEE9E2085BC7500EBFF88 /* MFPictureView.h */,
 				4A5AEE9F2085BC7500EBFF88 /* MFPictureView.m */,
-				4AA906B4208DAD4C00C99D77 /* FLAnimatedImageView+TransitionImage.h */,
-				4AA906B5208DAD4C00C99D77 /* FLAnimatedImageView+TransitionImage.m */,
+				4A60D11E20905FE500612995 /* YYAnimatedImageView+TransitionImage.h */,
+				4A60D11F20905FE500612995 /* YYAnimatedImageView+TransitionImage.m */,
 				4AE0C922208EBAE900A2B2D5 /* MFPictureModelProtocol.h */,
 			);
 			path = MFPictureBrowser;
@@ -170,8 +170,6 @@
 				4A5AEE7D2085987300EBFF88 /* Sources */,
 				4A5AEE7E2085987300EBFF88 /* Frameworks */,
 				4A5AEE7F2085987300EBFF88 /* Resources */,
-				009B16CC9B133F10F907ECF7 /* [CP] Embed Pods Frameworks */,
-				5875E36B2D958339829D3E05 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -232,36 +230,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		009B16CC9B133F10F907ECF7 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MFPictureBrowserDemo/Pods-MFPictureBrowserDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5875E36B2D958339829D3E05 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MFPictureBrowserDemo/Pods-MFPictureBrowserDemo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		CD5B2E9B46AE3F8D5A629EC8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -288,17 +256,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A5AEE9D2085A87600EBFF88 /* MFPictureBrowser.m in Sources */,
+				4A60D1262090761800612995 /* RemoteWelfareViewController.m in Sources */,
 				4A5AEEA32085C11B00EBFF88 /* MFDisplayPhotoCollectionViewCell.m in Sources */,
 				5E53B83F20863DD5007480C7 /* ListViewController.m in Sources */,
 				4A5AEEA02085BC7500EBFF88 /* MFPictureView.m in Sources */,
+				4A60D1232090761200612995 /* LocalImageViewController.m in Sources */,
 				5E53B84220863F0B007480C7 /* RemoteImageViewController.m in Sources */,
-				4AA906B6208DAD4C00C99D77 /* FLAnimatedImageView+TransitionImage.m in Sources */,
 				4A5AEE942085987300EBFF88 /* main.m in Sources */,
-				5E4F795B208C7A670036E0B2 /* RemoteWelfareViewController.m in Sources */,
-				5E53B84520863F14007480C7 /* LocalImageViewController.m in Sources */,
 				4A5AEE862085987300EBFF88 /* AppDelegate.m in Sources */,
 				4AE0C925208EBF6800A2B2D5 /* MFPictureModel.m in Sources */,
-				4A60D1112090297900612995 /* LocalWelfareViewController.m in Sources */,
+				4A60D12020905FE500612995 /* YYAnimatedImageView+TransitionImage.m in Sources */,
+				4A60D1292090761E00612995 /* LocalWelfareViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
