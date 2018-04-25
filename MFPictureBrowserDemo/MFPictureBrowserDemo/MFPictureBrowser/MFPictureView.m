@@ -161,12 +161,12 @@ UIScrollViewDelegate
                 }
                 if (!error && (stage == YYWebImageStageFinished || stage == YYWebImageStageCancelled)) {
                     strongSelf.loadingFinished = true;
-                    [self setPictureSize:image.size];
+                    [strongSelf setPictureSize:image.size];
                     if ([_pictureDelegate respondsToSelector:@selector(pictureView:image:animatedImage:didLoadAtIndex:)]) {
                         if (pictureModel.imageType == MFImageTypeGIF) {
                             [_pictureDelegate pictureView:strongSelf image:nil animatedImage:(YYImage *)image didLoadAtIndex:strongSelf.index];
                         }else {
-                             [_pictureDelegate pictureView:strongSelf image:image animatedImage:nil didLoadAtIndex:strongSelf.index];
+                            [_pictureDelegate pictureView:strongSelf image:image animatedImage:nil didLoadAtIndex:strongSelf.index];
                         }
                         
                     }
